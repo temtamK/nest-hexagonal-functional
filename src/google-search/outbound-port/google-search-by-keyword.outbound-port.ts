@@ -2,9 +2,14 @@ export type GoogleSearchByKeywordOutboundPortInputDto = {
   keyword: string;
 };
 
-export type GoogleSearchByKeywordOutboundPortOutputDto = Array<string>;
+export type GoogleSearchByKeywordOutboundPortOutputDto = {
+  items: Array<{
+    link: string;
+  }>;
+};
 
-export const FIND_APP_ID_INBOUND_PORT = 'FIND_APP_ID_INBOUND_PORT' as const;
+export const GOOGLE_SEARCH_BY_KEYWORD_OUTBOUND_PORT =
+  'GOOGLE_SEARCH_BY_KEYWORD_OUTBOUND_PORT' as const;
 
 export interface GoogleSearchByKeywordOutboundPort {
   execute(

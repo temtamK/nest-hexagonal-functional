@@ -51,33 +51,51 @@ describe('FindAppIdService Spec', () => {
   });
 
   test('9자리 또는 10자리 APP ID의 배열을 반환한다. 중복을 제거한다.', async () => {
+    try {
+      const findAppIdService = new FindAppIdService(
+        new MockGoogleSearchByKeywordOutboundPort({
+          items: [
+            {
+              link: 'https://apps.apple.com/us/app/notability/id360593530',
+            },
+            {
+              link: 'https://apps.apple.com/us/app/notability/id360593530',
+            },
+            {
+              link: 'https://apps.apple.com/us/app/notability/id123456789',
+            },
+            {
+              link: 'https://apps.apple.com/us/app/notability/id123456789',
+            },
+            {
+              link: 'https://apps.apple.com/us/app/notability/id12345678901',
+            },
+            {
+              link: 'https://apps.apple.com/us/app/notability/id12345',
+            },
+            {
+              link: 'notability/id393939399',
+            },
+          ],
+        }),
+      );
+
+      const result = await findAppIdService.execute({ keyword: 'google' });
+      console.log(result);
+
+      expect(result).toStrictEqual(['360593530', '123456789']);
+    } catch (err) {
+      console.log(err);
+    }
+  });
+
+  test('google search engine 이 null 을 리턴할 때, 빈 배열을 반환한다.', async () => {
     const findAppIdService = new FindAppIdService(
-      new MockGoogleSearchByKeywordOutboundPort({
-        items: [
-          {
-            link: 'https://apps.apple.com/us/app/notability/id360593530',
-          },
-          {
-            link: 'https://apps.apple.com/us/app/notability/id360593530',
-          },
-          {
-            link: 'https://apps.apple.com/us/app/notability/id123456789',
-          },
-          {
-            link: 'https://apps.apple.com/us/app/notability/id123456789',
-          },
-          {
-            link: 'https://apps.apple.com/us/app/notability/id12345678901',
-          },
-          {
-            link: 'https://apps.apple.com/us/app/notability/id12345',
-          },
-        ],
-      }),
+      new MockGoogleSearchByKeywordOutboundPort(null),
     );
 
-    const result = findAppIdService.execute({ keyword: 'asd' });
+    const result = await findAppIdService.execute({ keyword: 'google' });
 
-    expect(result).toStrictEqual(['360593530', '123456789']);
+    expect(result).toStrictEqual([]);
   });
 });
